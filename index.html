@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/x-icon" href="images.ico">
+  <title>Bacolod City Dawn Watch Prayer</title>
+  <style>
+    body {
+      font-family: "Arial Narrow", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+  background-color: #32085e;
+  color: white;
+  padding: 10px 20px; /* ↓ reduced top & bottom padding */
+  text-align: center;
+  line-height: 1; /* ↓ tighten vertical spacing */
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.1; /* ↓ tighter spacing */
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 1.1; /* ↓ tighter spacing */
+}
+
+
+    .container {
+  padding: 5px 20px 20px 20px; /* ↓ top padding from 10px to 5px */
+  text-align: center;
+}
+
+    #guidelinesBtn {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #32085e;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px 0;
+    }
+
+    #guidelinesBtn:hover {
+      background-color: #4c148a;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    td {
+      width: 14.28%;
+      height: 130px;
+      border: 1px solid #ccc;
+      vertical-align: top;
+      position: relative;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    td:hover {
+      background-color: #f0f0f0;
+    }
+
+    .cell-content {
+      padding: 5px;
+      font-size: 20px;
+      text-align: left;
+    }
+
+    .info {
+      font-size: 18px;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .info strong {
+      font-weight: 600;
+      display: block;
+      font-size: 16px;
+    }
+
+    .info span {
+      font-size: 15px;
+      display: block;
+    }
+
+    .form-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      border: 1px solid #ccc;
+      padding: 30px;
+      z-index: 10;
+      width: 400px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      font-family: "Arial Narrow", Arial, sans-serif;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .form-popup h1 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-popup input[type="text"] {
+      width: 90%;
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    .form-popup .btn {
+      padding: 10px 18px;
+      font-size: 16px;
+      margin: 10px 6px;
+      border: 1px solid #999;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .form-popup .btn.save {
+      background-color: #28a745;
+      color: white;
+      border: none;
+    }
+
+    .form-popup .btn.save:hover {
+      background-color: #218838;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 9;
+    }
+
+    .filled {
+      background: linear-gradient(to bottom right, #fff8dc, #fbe8a6);
+    }
+
+    /* PDF Modal */
+    #pdfModal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+    }
+
+    #pdfModalContent {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 80%;
+      background-color: #333;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    #pdfModal iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    #closePdfModal {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 1001;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>BACOLOD CITY DAWN WATCH PRAYER</h1>
+    <h2>At BCGC Grounds, 5AM–6AM, daily.</h2>
+  </div>
+
+  <div class="container">
+    <button id="guidelinesBtn" class="btn">Check Guidelines</button>
+    <table id="calendar"></table>
+  </div>
+
+  <!-- Form Popup -->
+  <div class="overlay" id="overlay"></div>
+  <div class="form-popup" id="formPopup">
+    <h1>COMMIT ON THIS DAY</h1>
+    <input type="hidden" id="selectedDate">
+    <label>Church Name:</label><br>
+    <input type="text" id="church"><br><br>
+    <label>Pastor's Name:</label><br>
+    <input type="text" id="pastor"><br><br>
+    <button class="btn save" onclick="saveData()">Save</button>
+    <div class="actions">
+      <button class="btn" onclick="deleteData()">Delete</button>
+      <button class="btn" onclick="closeForm()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- PDF Modal -->
+  <div id="pdfModal">
+    <div id="pdfModalContent">
+      <button id="closePdfModal">&times;</button>
+      <iframe src="Nationwide-Dawn-Watch-Prayer.pdf#toolbar=0"></iframe>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function () {
+      const calendar = document.getElementById('calendar');
+      const overlay = document.getElementById('overlay');
+      const formPopup = document.getElementById('formPopup');
+      const selectedDateInput = document.getElementById('selectedDate');
+      const churchInput = document.getElementById('church');
+      const pastorInput = document.getElementById('pastor');
+
+      const guidelinesBtn = document.getElementById("guidelinesBtn");
+      const pdfModal = document.getElementById("pdfModal");
+      const closePdfModal = document.getElementById("closePdfModal");
+
+      // Show PDF modal
+      guidelinesBtn.onclick = function () {
+        pdfModal.style.display = "block";
+      };
+
+      // Close PDF modal
+      closePdfModal.onclick = function () {
+        pdfModal.style.display = "none";
+      };
+
+      window.onclick = function (event) {
+        if (event.target === pdfModal) {
+          pdfModal.style.display = "none";
+        }
+        if (event.target === overlay) {
+          closeForm();
+        }
+      };
+
+      const daysInMonth = 31;
+
+      function drawCalendar() {
+        let html = "";
+        let currentDay = 1;
+        for (let row = 0; row < 5; row++) {
+          html += "<tr>";
+          for (let col = 0; col < 7; col++) {
+            if (currentDay <= daysInMonth) {
+              const data = JSON.parse(localStorage.getItem(`day-${currentDay}`));
+              const filledClass = data ? "filled" : "";
+              html += `<td class="${filledClass}" onclick="openForm(${currentDay})">
+                        <div class="cell-content" id="cell-${currentDay}">
+                          <strong>${currentDay}</strong>${loadData(currentDay)}
+                        </div>
+                      </td>`;
+              currentDay++;
+            } else {
+              html += "<td></td>";
+            }
+          }
+          html += "</tr>";
+        }
+        calendar.innerHTML = html;
+      }
+
+      window.openForm = function(day) {
+        selectedDateInput.value = day;
+        const data = JSON.parse(localStorage.getItem(`day-${day}`));
+        churchInput.value = data ? data.church : '';
+        pastorInput.value = data ? data.pastor : '';
+        overlay.style.display = 'block';
+        formPopup.style.display = 'block';
+      };
+
+      window.closeForm = function() {
+        overlay.style.display = 'none';
+        formPopup.style.display = 'none';
+      };
+
+      window.saveData = function() {
+        const day = selectedDateInput.value;
+        const church = churchInput.value.trim();
+        const pastor = pastorInput.value.trim();
+        localStorage.setItem(`day-${day}`, JSON.stringify({ church, pastor }));
+
+        const cell = document.getElementById(`cell-${day}`);
+        cell.innerHTML = `<strong>${day}</strong><div class="info"><strong>${church}</strong><span>${pastor}</span></div>`;
+        cell.parentElement.classList.add("filled");
+
+        closeForm();
+      };
+
+      window.deleteData = function() {
+        const day = selectedDateInput.value;
+        localStorage.removeItem(`day-${day}`);
+
+        const cell = document.getElementById(`cell-${day}`);
+        cell.innerHTML = `<strong>${day}</strong>`;
+        cell.parentElement.classList.remove("filled");
+
+        closeForm();
+      };
+
+      function loadData(day) {
+        const data = JSON.parse(localStorage.getItem(`day-${day}`));
+        return data ? `<div class="info"><strong>${data.church}</strong><span>${data.pastor}</span></div>` : '';
+      }
+
+      drawCalendar();
+    };
+  </script>
+
+</body>
+</html>
